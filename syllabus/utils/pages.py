@@ -31,6 +31,8 @@ from syllabus.models.user import User
 from syllabus.utils.feedbacks import set_feedback
 from syllabus.utils.toc import Chapter, Content, Page
 
+THIS_PATH = os.path.dirname(os.path.abspath(__file__))   # refers to application_top
+
 default_rst_opts = {
     'no_generator': True,
     'no_source_link': True,
@@ -81,6 +83,12 @@ def permission_admin(f):
         return f(*args, **kwargs)
     return wrapper
 
+
+def get_cheat_sheet():
+    with open(os.path.join(THIS_PATH, '../cheat_sheet/rst-cheatsheet.rst'), "r") as f:
+        code_html = render_template_string(publish_string(f.read(),
+                              writer_name='html', settings_overrides=default_rst_opts))
+        return "<div id=\"cheat_sheet\" style=\"overflow-y: scroll\">"+code_html+"</div>"
 
 def _render_content_to_jinja_templating(course, content):
     if type(content) is Chapter:
